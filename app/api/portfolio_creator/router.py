@@ -10,7 +10,7 @@ router = APIRouter()
 
 
 @router.post("/")
-def set_portfolio(risk_coefficient: float = Body(..., ge=0, le=5, embed=True), db: Session = Depends(deps.get_db)):
+def set_portfolio(risk_coefficient: float = Body(..., ge=0, le=5), db: Session = Depends(deps.get_db)):
 
     portfolio = optimal_portfolio(risk_coefficient, db)
 
