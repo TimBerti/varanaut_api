@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends, Form
+from typing import Dict
+from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 
@@ -10,8 +11,8 @@ router = APIRouter()
 
 
 @router.post("/")
-def set_portfolio(risk_coefficient: float = Form(..., ge=0, le=5), db: Session = Depends(deps.get_db)):
+def set_portfolio(request: Dict, db: Session = Depends(deps.get_db)):
 
-    portfolio = optimal_portfolio(risk_coefficient, db)
+    portfolio = optimal_portfolio(request["risk_coefficient"], db)
 
     return JSONResponse(content=portfolio)
