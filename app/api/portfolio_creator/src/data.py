@@ -16,11 +16,14 @@ def load_returns(db):
         )
         AND fama_french_expectation IS NOT NULL
         AND relative_score >= 4
-        ORDER BY ticker
+        ORDER BY fama_french_expectation DESC
+        LIMIT 100
         ;
     '''
 
     fundamentals_df = pd.read_sql(sql, con=db.bind)
+
+    fundamentals_df.sort_values('ticker', inplace=True)
 
     sql = f'''
         SELECT time, ticker, adjusted_close / LAG(adjusted_close) OVER (

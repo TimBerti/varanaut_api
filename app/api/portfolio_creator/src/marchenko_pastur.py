@@ -18,7 +18,7 @@ def denoise_correlation_matrix(corr):
     Returns denoised correlation matrix using the Marchenko Pastur Theorem.
     '''
 
-    evals, evecs = np.linalg.eig(corr)  # eigenvalue decomposition
+    evals, evecs = np.linalg.eigh(corr)  # eigenvalue decomposition
 
     n, m = corr.shape
 
