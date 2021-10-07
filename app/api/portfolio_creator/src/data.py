@@ -22,15 +22,13 @@ def load_returns(db):
 
     fundamentals_df = pd.read_sql(sql, con=db.bind)
 
-    tickers = fundamentals_df['ticker'].unique()
-
     sql = f'''
         SELECT time, ticker, adjusted_close / LAG(adjusted_close) OVER (
             PARTITION BY ticker
             ORDER BY time
         ) AS daily_return
         FROM eod WHERE ticker IN 
-            ('{"', '".join(tickers)}')
+            ('{"', '".join(fundamentals_df['ticker'])}')
         AND time > CURRENT_DATE - INTERVAL '1 year'
     '''
 

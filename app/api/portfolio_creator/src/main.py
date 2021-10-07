@@ -20,12 +20,13 @@ def optimal_portfolio(gamma, db):
     expected_return = sigmoid_scaler(
         np.log(fundamentals_df['fama_french_expectation'] / 100 + 1))
 
-    daily_returns_df.dropna(inplace=True)
-
     daily_returns_df = (daily_returns_df - daily_returns_df.mean()
                         ) / daily_returns_df.std()    # normalize
 
     corr = daily_returns_df.corr()
+
+    fundamentals_df = fundamentals_df[fundamentals_df['ticker'].isin(
+        corr.index)]    # filter NAs
 
     corr_denoised = denoise_correlation_matrix(
         corr)
