@@ -2,7 +2,7 @@ amqp==5.0.6
 APScheduler==3.7.0
 asgiref==3.4.1
 asyncpg==0.24.0
-autopep8==1.5.7
+autopep8==1.6.0
 bcrypt==3.2.0
 billiard==3.6.4.0
 certifi==2021.5.30
@@ -29,7 +29,7 @@ passlib==1.7.4
 patsy==0.5.1
 prompt-toolkit==3.0.20
 psycopg2==2.9.1
-pycodestyle==2.7.0
+pycodestyle==2.8.0
 pycparser==2.20
 pydantic==1.8.2
 python-dateutil==2.8.2
