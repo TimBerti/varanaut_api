@@ -10,21 +10,19 @@ def portfolio_creator(db, risk_coefficient, n_positions):
     '''Return portfolio with n_positions, with risk under or equal to risk_coefficient'''
 
     sql = '''
-        SELECT ticker, cluster, implied_volatility, combined_score 
+        SELECT ticker, cluster, implied_volatility_ranker, combined_score 
         FROM companies_display 
         WHERE ticker IN (
                 SELECT UNNEST(components) FROM indices 
                 WHERE ticker = 'RUA'
             )
         AND cluster IS NOT NULL
-        AND implied_volatility IS NOT NULL
         AND combined_score IS NOT NULL
+        AND implied_volatility > 0
         ORDER BY combined_score DESC
     '''
 
     df = pd.read_sql(sql, con=db.bind)
-
-    df['implied_volatility_ranker'] = df['implied_volatility'].rank(pct=True)
 
     filtered_df = df[df['implied_volatility_ranker'] <= risk_coefficient]
 
