@@ -37,7 +37,9 @@ def get_data(db, excluded_tickers, max_iv):
     return pd.read_sql(sql, con=db.bind)
 
 
-def recommendation(db, portfolio):
+def diversification_recommendation(db, portfolio):
+
+    # get data
 
     tickers = [x['ticker'] for x in portfolio]
 
@@ -48,6 +50,8 @@ def recommendation(db, portfolio):
 
     corr_matrix = pd.read_sql('cluster_correlation', con=db.bind).to_numpy()
 
+    # calculate cluster weights
+
     cluster_df = pd.DataFrame({'cluster': df['cluster'].unique()}).join(
         portfolio_df.groupby('cluster').sum(), on='cluster')
 
@@ -55,7 +59,11 @@ def recommendation(db, portfolio):
 
     cluster_weight = cluster_df.sort_values('cluster')['weight'].to_numpy()
 
+    # calculate optimal clusters for diversification
+
     clusters = np.argsort(corr_matrix @ cluster_weight)[:3]
+
+    # chose best stocks per cluster
 
     cluster_groups = df[df['cluster'].isin(clusters)].groupby('cluster')
 

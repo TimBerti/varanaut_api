@@ -4,15 +4,15 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 
 from app.api import deps
-from app.api.recommendation.main import recommendation
+from app.api.recommendation.diversification_recommendation import diversification_recommendation
 
 
 router = APIRouter()
 
 
-@router.post("/")
-def set_portfolio(request: Dict, db: Session = Depends(deps.get_db)):
+@router.post("/diversification")
+def get_diversification_recommendation(request: Dict, db: Session = Depends(deps.get_db)):
 
-    portfolio = recommendation(db, request["portfolio"])
+    portfolio = diversification_recommendation(db, request["portfolio"])
 
     return JSONResponse(content=portfolio)
