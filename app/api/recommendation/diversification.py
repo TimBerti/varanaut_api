@@ -63,7 +63,7 @@ def diversification_recommendation(db, portfolio):
 
     clusters = np.argsort(corr_matrix @ cluster_weight)[:3]
 
-    # chose best stocks per cluster
+    # choose best stocks per cluster
 
     cluster_groups = df[df['cluster'].isin(clusters)].groupby('cluster')
 

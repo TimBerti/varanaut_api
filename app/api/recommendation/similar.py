@@ -50,20 +50,20 @@ def similar_recommendation(db, portfolio):
 
     # calculate portfolio vector
 
-    portfolio_vector = np.array([(portfolio_df['weight'] * portfolio_df['smb_factor']).sum(),
+    portfolio_vector = np.array([[(portfolio_df['weight'] * portfolio_df['smb_factor']).sum(),
                                  (portfolio_df['weight'] *
                                   portfolio_df['hml_factor']).sum(),
                                  (portfolio_df['weight'] *
                                   portfolio_df['cma_factor']).sum(),
-                                 (portfolio_df['weight'] * portfolio_df['rmw_factor']).sum()])
+                                 (portfolio_df['weight'] * portfolio_df['rmw_factor']).sum()]]).T
 
-    # calculate squared distance of stocks to portfolio vecot
+    # calculate between stocks and portfolio vector
 
-    M = df[['smb_factor', 'hml_factor', 'cma_factor',
-            'rmw_factor']].to_numpy() - portfolio_vector
+    M = df[['smb_factor', 'hml_factor', 'cma_factor', 'rmw_factor']].to_numpy()
 
-    df['squared_distance'] = (M@M.T).diagonal()
+    df['angle'] = np.arccos((M@portfolio_vector).T[0] / np.sqrt(
+        (M@M.T).diagonal() * (portfolio_vector.T@portfolio_vector)[0][0]))
 
-    # chose best stocks in the closest 50
+    # choose best stocks in the closest 50
 
-    return df.sort_values('squared_distance')[:50].sort_values('combined_score', ascending=False)['ticker'][:3].to_list()
+    return df.sort_values('angle')[:50].sort_values('combined_score', ascending=False)['ticker'][:3].to_list()
