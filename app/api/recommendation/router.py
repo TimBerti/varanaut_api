@@ -4,7 +4,7 @@ from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 
 from app.api import deps
-from app.api.recommendation.diversification_recommendation import diversification_recommendation
+from app.api.recommendation.diversification import diversification_recommendation
 
 
 router = APIRouter()
