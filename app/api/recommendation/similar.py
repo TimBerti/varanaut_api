@@ -38,9 +38,6 @@ def similar_recommendation(db, portfolio):
 
     # get data
 
-    portfolio = [{'ticker': 'VRTX', 'weight': 0.2}, {'ticker': 'MSFT', 'weight': 0.2}, {
-        'ticker': 'META', 'weight': 0.2}, {'ticker': 'GE', 'weight': 0.2}, {'ticker': 'NFLX', 'weight': 0.2}]
-
     tickers = [x['ticker'] for x in portfolio]
 
     portfolio_df = pd.DataFrame(portfolio).join(
@@ -57,7 +54,7 @@ def similar_recommendation(db, portfolio):
                                   portfolio_df['cma_factor']).sum(),
                                  (portfolio_df['weight'] * portfolio_df['rmw_factor']).sum()]]).T
 
-    # calculate between stocks and portfolio vector
+    # calculate angle between stocks and portfolio vector
 
     M = df[['smb_factor', 'hml_factor', 'cma_factor', 'rmw_factor']].to_numpy()
 
