@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+from random import sample
 
 
 def get_portfolio_df(db, tickers):
@@ -8,7 +9,6 @@ def get_portfolio_df(db, tickers):
         SELECT ticker, smb_factor, hml_factor, cma_factor, rmw_factor, implied_volatility_ranker
         FROM companies_display 
         WHERE ticker IN ('{"', '".join(tickers)}')
-        AND implied_volatility > 0
         ORDER BY combined_score DESC
     '''
 
@@ -34,7 +34,7 @@ def get_data(db, excluded_tickers, max_iv):
     return pd.read_sql(sql, con=db.bind)
 
 
-def similar_recommendation(db, portfolio):
+def calculate_recommendation(db, portfolio):
 
     # get data
 
@@ -58,9 +58,21 @@ def similar_recommendation(db, portfolio):
 
     M = df[['smb_factor', 'hml_factor', 'cma_factor', 'rmw_factor']].to_numpy()
 
-    df['angle'] = np.arccos((M@portfolio_vector).T[0] / np.sqrt(
-        (M@M.T).diagonal() * (portfolio_vector.T@portfolio_vector)[0][0]))
+    df['angle'] = np.abs(np.arccos((M@portfolio_vector).T[0] / np.sqrt(
+        (M@M.T).diagonal() * (portfolio_vector.T@portfolio_vector)[0][0])))
 
-    # choose best stocks in the closest 50
+    # choose 3 tickers randomly out of the 10 tickers, with the best combined score,
+    # out of the 150 tickers closest (farthest) to (from) the portfolio
+    # for the similar (diversification) recommendation
 
-    return df.sort_values('angle')[:50].sort_values('combined_score', ascending=False)['ticker'][:3].to_list()
+    tmp_similar_recommendation = df.sort_values('angle')[:150].sort_values(
+        'combined_score', ascending=False)['ticker'][:10].to_list()
+
+    tmp_diversification_recommendation = df.sort_values('angle', ascending=False)[
+        :150].sort_values('combined_score', ascending=False)['ticker'][:10].to_list()
+
+    similar_recommendation = sample(tmp_similar_recommendation, k=3)
+    diversification_recommendation = sample(
+        tmp_diversification_recommendation, k=3)
+
+    return {'similiar': similar_recommendation, 'diversification': diversification_recommendation}
