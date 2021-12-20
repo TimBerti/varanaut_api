@@ -18,5 +18,8 @@ class Settings(BaseSettings):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SQLALCHEMY_POOL_RECYCLE = 3600
 
+    SECRET_KEY = os.environ['SECRET_KEY']
+    SECURITY_ALGORITHM = os.environ['SECURITY_ALGORITHM']
+
 
 settings = Settings()

@@ -75,4 +75,4 @@ def calculate_recommendation(db, portfolio):
     diversification_recommendation = sample(
         tmp_diversification_recommendation, k=3)
 
-    return {'similiar': similar_recommendation, 'diversification': diversification_recommendation}
+    return {'similar': similar_recommendation, 'diversification': diversification_recommendation}
