@@ -1,10 +1,9 @@
 import uvicorn
-import time
 import jwt
 from datetime import datetime
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
-from starlette.middleware.cors import CORSMiddleware
+from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.api.routers import api_router
 
@@ -25,15 +24,6 @@ async def auth(request: Request, call_next):
         return response
     except:
         return JSONResponse(content='Could not validate token.', status_code=403)
-
-
-@app.middleware("http")
-async def add_process_time_header(request: Request, call_next):
-    start_time = time.time()
-    response = await call_next(request)
-    process_time = time.time() - start_time
-    response.headers["X-Process-Time"] = f'{process_time:.2f}s'
-    return response
 
 
 app.add_middleware(
