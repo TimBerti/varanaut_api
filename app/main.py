@@ -20,21 +20,21 @@ app.add_middleware(
 )
 
 
-# @app.middleware("http")
-# async def auth(request: Request, call_next):
-#     try:
-#         payload = jwt.decode(request.headers['token'], settings.SECRET_KEY, algorithms=[
-#             settings.SECURITY_ALGORITHM])
+@app.middleware("http")
+async def auth(request: Request, call_next):
+    try:
+        payload = jwt.decode(request.headers['token'], settings.SECRET_KEY, algorithms=[
+            settings.SECURITY_ALGORITHM])
 
-#         print(datetime.fromtimestamp(payload.get('exp')), datetime.now())
+        print(datetime.fromtimestamp(payload.get('exp')), datetime.now())
 
-#         if datetime.fromtimestamp(payload.get('exp')) < datetime.now():
-#             return JSONResponse(content='Token expired.', status_code=403)
+        if datetime.fromtimestamp(payload.get('exp')) < datetime.now():
+            return JSONResponse(content='Token expired.', status_code=403)
 
-#         response = await call_next(request)
-#         return response
-#     except:
-#         return JSONResponse(content='Could not validate token.', status_code=403)
+        response = await call_next(request)
+        return response
+    except:
+        return JSONResponse(content='Could not validate token.', status_code=403)
 
 
 @app.middleware("http")
