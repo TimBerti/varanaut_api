@@ -4,7 +4,7 @@ import jwt
 from datetime import datetime
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
-from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.cors import CORSMiddleware
 from app.core.config import settings
 from app.api.routers import api_router
 
@@ -25,8 +25,6 @@ async def auth(request: Request, call_next):
     try:
         payload = jwt.decode(request.headers['token'], settings.SECRET_KEY, algorithms=[
             settings.SECURITY_ALGORITHM])
-
-        print(datetime.fromtimestamp(payload.get('exp')), datetime.now())
 
         if datetime.fromtimestamp(payload.get('exp')) < datetime.now():
             return JSONResponse(content='Token expired.', status_code=403)
