@@ -19,6 +19,7 @@ def portfolio_creator(db, risk_coefficient, n_positions):
         AND cluster IS NOT NULL
         AND combined_score IS NOT NULL
         AND implied_volatility > 0
+        AND sector != 'Financial Services'
         ORDER BY combined_score DESC
     '''
 
