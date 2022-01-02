@@ -14,6 +14,6 @@ router = APIRouter()
 def set_portfolio(request: Dict, db: Session = Depends(deps.get_db)):
 
     portfolio = portfolio_creator(
-        db, request["risk_coefficient"], request["n_positions"])
+        db, request)
 
     return JSONResponse(content=portfolio)

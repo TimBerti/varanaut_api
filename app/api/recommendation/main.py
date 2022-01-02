@@ -21,13 +21,14 @@ def get_data(db, excluded_tickers, max_iv):
         SELECT ticker, combined_score, smb_factor, hml_factor, cma_factor, rmw_factor
         FROM companies_display 
         WHERE ticker IN (
-                SELECT UNNEST(components) FROM indices 
-                WHERE ticker = 'RUA'
+                SELECT UNNEST(holdings) FROM etf 
+                WHERE ticker = 'VTI'
             )
         AND ticker NOT IN ('{"', '".join(excluded_tickers)}')
         AND combined_score IS NOT NULL
         AND implied_volatility > 0
         AND implied_volatility_ranker < {max_iv}
+        AND sector != 'Financial Services'
         ORDER BY combined_score DESC
     '''
 
