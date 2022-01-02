@@ -10,7 +10,7 @@ def portfolio_creator(db, request):
     '''Return portfolio with n_positions, with risk under or equal to risk_coefficient'''
 
     sql = '''
-        SELECT ticker, cluster, implied_volatility_ranker, combined_score 
+        SELECT ticker, cluster, implied_volatility_ranker, combined_score, description 
         FROM companies_display 
         WHERE ticker IN (
                 SELECT UNNEST(holdings) FROM etf 
@@ -22,14 +22,24 @@ def portfolio_creator(db, request):
         AND sector != 'Financial Services'
     '''
 
-    if request.get('dividend'):
-        sql += '''
-            AND dividend_yield > 1
-        '''
-
     if request.get('esg'):
         sql += '''
             AND esg
+        '''
+
+    if request.get('dividend'):
+        sql += '''
+            AND dividend_yield > 1.5
+        '''
+
+    if request.get('value'):
+        sql += '''
+            AND price_earnings_ranker + price_book_ranker > 1
+        '''
+
+    if request.get('growth'):
+        sql += '''
+            AND revenue_growth_3y_ranker > 0.6
         '''
 
     sql += '''
