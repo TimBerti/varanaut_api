@@ -19,11 +19,11 @@ async def auth(request: Request, call_next):
 
         if datetime.fromtimestamp(payload.get('exp')) < datetime.now():
             return JSONResponse(content='Token expired.', status_code=403)
-
-        response = await call_next(request)
-        return response
     except:
         return JSONResponse(content='Could not validate token.', status_code=403)
+
+    response = await call_next(request)
+    return response
 
 
 app.add_middleware(

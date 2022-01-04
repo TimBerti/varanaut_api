@@ -6,7 +6,7 @@ from random import sample
 def get_portfolio_df(db, tickers):
 
     sql = f'''
-        SELECT ticker, smb_factor, hml_factor, cma_factor, rmw_factor, implied_volatility_ranker
+        SELECT ticker, smb_factor, hml_factor, cma_factor, rmw_factor, implied_volatility
         FROM companies_display 
         WHERE ticker IN ('{"', '".join(tickers)}')
         ORDER BY combined_score DESC
@@ -26,8 +26,7 @@ def get_data(db, excluded_tickers, max_iv):
             )
         AND ticker NOT IN ('{"', '".join(excluded_tickers)}')
         AND combined_score IS NOT NULL
-        AND implied_volatility > 0
-        AND implied_volatility_ranker < {max_iv}
+        AND implied_volatility BETWEEN 1 AND {max_iv}
         AND sector != 'Financial Services'
         ORDER BY combined_score DESC
     '''
@@ -44,7 +43,11 @@ def calculate_recommendation(db, portfolio):
     portfolio_df = pd.DataFrame(portfolio).join(
         get_portfolio_df(db, tickers), on='ticker', how='inner')
 
-    df = get_data(db, tickers, portfolio_df['implied_volatility_ranker'].max())
+    max_portfolio_iv = portfolio_df['implied_volatility'].max()
+
+    max_iv = 1.1 * max_portfolio_iv if max_portfolio_iv > 0 else 100
+
+    df = get_data(db, tickers, max_iv)
 
     # calculate portfolio vector
 
