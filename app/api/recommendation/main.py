@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 from random import sample
+from fastapi.responses import JSONResponse
 
 
 def get_portfolio_df(db, tickers):
@@ -37,6 +38,9 @@ def get_data(db, excluded_tickers, max_iv):
 def calculate_recommendation(db, portfolio):
 
     # get data
+
+    if not {type(x.get('ticker')) == str and type(x.get('weight')) in [float, int] for x in portfolio} == {True}:
+        return JSONResponse(content='Wrong portfolio format.', status_code=400)
 
     tickers = [x['ticker'] for x in portfolio]
 
@@ -79,4 +83,4 @@ def calculate_recommendation(db, portfolio):
     diversification_recommendation = sample(
         tmp_diversification_recommendation, k=3)
 
-    return {'similar': similar_recommendation, 'diversification': diversification_recommendation}
+    return JSONResponse(content={'similar': similar_recommendation, 'diversification': diversification_recommendation})

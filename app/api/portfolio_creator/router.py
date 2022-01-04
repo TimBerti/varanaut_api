@@ -1,6 +1,5 @@
 from typing import Dict
 from fastapi import APIRouter, Depends
-from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 
 from app.api import deps
@@ -12,8 +11,4 @@ router = APIRouter()
 
 @router.post("/")
 def set_portfolio(request: Dict, db: Session = Depends(deps.get_db)):
-
-    portfolio = portfolio_creator(
-        db, request)
-
-    return JSONResponse(content=portfolio)
+    return portfolio_creator(db, request)
