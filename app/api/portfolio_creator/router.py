@@ -10,5 +10,5 @@ router = APIRouter()
 
 
 @router.post("/")
-def set_portfolio(request: Dict, db: Session = Depends(deps.get_db)):
+def get_portfolio(request: Dict, db: Session = Depends(deps.get_db)):
     return portfolio_creator(db, request)
