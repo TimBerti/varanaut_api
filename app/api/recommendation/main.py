@@ -39,6 +39,9 @@ def calculate_recommendation(db, portfolio):
 
     # get data
 
+    if len(portfolio) > 100:
+        return JSONResponse(content='Portfolio must be smaller then 100', status_code=400)
+
     if not {type(x.get('ticker')) == str and type(x.get('weight')) in [float, int] for x in portfolio} == {True}:
         return JSONResponse(content='Wrong portfolio format.', status_code=400)
 

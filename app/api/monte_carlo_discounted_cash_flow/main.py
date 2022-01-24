@@ -13,7 +13,7 @@ def monte_carlo_discounted_cash_flow(n_trials=100000, n_periods=10, r_0=1.09, dr
     r_n: terminal growth
     dr_n: uncertainty of terminal growth
 
-    C0: initial cash flow per share
+    C_0: initial cash flow per share
 
     discount_rate: discount rate per period
 

@@ -10,11 +10,11 @@ def split_equal(z: int, n: int):
 def portfolio_creator(db, request):
     '''Return portfolio with n_positions, with risk under or equal to risk_coefficient'''
 
-    if type(request.get("risk_coefficient")) not in [float, int]:
-        return JSONResponse(content='The request must contain a numeric value for risk_coefficient.', status_code=400)
+    if type(request.get("risk_coefficient")) not in [float, int] or 0 > request.get("risk_coefficient") or 1 < request.get("risk_coefficient"):
+        return JSONResponse(content='The request must contain a numeric value between 0 and 1 for risk_coefficient.', status_code=400)
 
-    if type(request.get("n_positions")) not in [int]:
-        return JSONResponse(content='The request must contain an integer value for n_positions.', status_code=400)
+    if type(request.get("n_positions")) not in [int] or 0 > request.get("n_positions") or 30 < request.get("n_positions"):
+        return JSONResponse(content='The request must contain an integer value between 0 and 30 for n_positions.', status_code=400)
 
     sql = f'''
         SELECT ticker, cluster, combined_score
