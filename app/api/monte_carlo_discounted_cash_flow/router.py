@@ -20,14 +20,14 @@ class Item(BaseModel):
         1.3, ge=0.1, le=5
     )
     dr_0: Optional[float] = Field(
-        0.3, ge=0.01, le=5
+        0.3, ge=0.001, le=5
     )
 
     r_n: Optional[float] = Field(
         1.04, ge=0.1, le=5
     )
     dr_n: Optional[float] = Field(
-        0.16, ge=0.01, le=5
+        0.16, ge=0.001, le=5
     )
 
     C_0: Optional[float] = Field(
