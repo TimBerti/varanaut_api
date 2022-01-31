@@ -2,7 +2,7 @@ import numpy as np
 from fastapi.responses import JSONResponse
 
 
-def monte_carlo_discounted_cash_flow(n_trials=100000, n_periods=10, r_0=1.3, dr_0=.3, r_n=1.04, dr_n=.16, C_0=10, discount_rate=.1, terminal_multiple=15):
+def monte_carlo_discounted_cash_flow(n_trials=100000, n_periods=10, p_0=1, r_0=1.3, dr_0=.3, r_n=1.04, dr_n=.16, S_0=10, m=0.3, dm=0.1, terminal_multiple=15, discount_rate=.1):
     '''
     n_trials: number of trials
     n_periods: number of periods
@@ -13,7 +13,10 @@ def monte_carlo_discounted_cash_flow(n_trials=100000, n_periods=10, r_0=1.3, dr_
     r_n: terminal growth
     dr_n: uncertainty of terminal growth
 
-    C_0: initial cash flow per share
+    S_0: initial revenue per share
+
+    m: expected margin
+    dm: range of margin
 
     discount_rate: discount rate per period
 
@@ -27,8 +30,10 @@ def monte_carlo_discounted_cash_flow(n_trials=100000, n_periods=10, r_0=1.3, dr_
 
     # calculate cash flows
 
+    m_arr = np.random.triangular(m - dm, m, m + dm, size=(n_trials, n_periods))
+
     r_matrix = np.random.normal(size=(n_trials, n_periods)) * dr_arr + r_arr
-    cash_flow_matrix = C_0 * r_matrix.cumprod(axis=1)
+    cash_flow_matrix = S_0 * r_matrix.cumprod(axis=1) * m_arr
 
     # discount cash flows
 
@@ -52,16 +57,17 @@ def monte_carlo_discounted_cash_flow(n_trials=100000, n_periods=10, r_0=1.3, dr_
 
     cumulative_probability = hist.cumsum() / hist.sum()
 
-    p_undervalued = 1 - cumulative_probability
+    p_undervalued_arr = 1 - cumulative_probability
 
     return_object = JSONResponse(content={'fair_value': np.median(fair_values_arr),
+                                          'p_undervalued': p_undervalued_arr[np.argmin(np.abs(bin_edges - p_0))],
                                           'cash_flow_matrix': cash_flow_matrix[:100].tolist(),
                                           'mean_cash_flow': cash_flow_matrix.mean(axis=0).tolist(),
                                           'discounted_cash_flow_matrix': discounted_cash_flow_matrix[:100].tolist(),
                                           'mean_discounted_cash_flow': discounted_cash_flow_matrix.mean(axis=0).tolist(),
                                           'hist': hist.tolist(),
                                           'bin_edges': bin_edges[:-1].tolist(),
-                                          'p_undervalued': p_undervalued.tolist()
+                                          'p_undervalued_arr': p_undervalued_arr.tolist()
                                           }
                                  )
 
