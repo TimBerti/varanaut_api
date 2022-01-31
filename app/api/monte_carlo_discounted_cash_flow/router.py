@@ -18,7 +18,7 @@ class Item(BaseModel):
     )
 
     p_0: Optional[float] = Field(
-        1, gt=0, le=100000
+        100, gt=0, le=100000
     )
 
     r_0: Optional[float] = Field(

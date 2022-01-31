@@ -2,7 +2,7 @@ import numpy as np
 from fastapi.responses import JSONResponse
 
 
-def monte_carlo_discounted_cash_flow(n_trials=100000, n_periods=10, p_0=1, r_0=1.3, dr_0=.3, r_n=1.04, dr_n=.16, S_0=10, m=0.3, dm=0.1, terminal_multiple=15, discount_rate=.1):
+def monte_carlo_discounted_cash_flow(n_trials=100000, n_periods=10, p_0=100, r_0=1.3, dr_0=.3, r_n=1.04, dr_n=.16, S_0=10, m=0.3, dm=0.1, terminal_multiple=15, discount_rate=.1):
     '''
     n_trials: number of trials
     n_periods: number of periods
