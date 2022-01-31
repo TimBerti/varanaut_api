@@ -53,7 +53,7 @@ def monte_carlo_discounted_cash_flow(n_trials=100000, n_periods=10, p_0=100, r_0
     # calculate probabilites of beeing undervalued
 
     hist, bin_edges = np.histogram(fair_values_arr, bins=1000, range=(
-        0, np.percentile(fair_values_arr, 99)), density=True)
+        0, np.percentile(fair_values_arr, 99)))
 
     cumulative_probability = hist.cumsum() / hist.sum()
 
