@@ -57,6 +57,14 @@ class Item(BaseModel):
         0.1, ge=0, le=9
     )
 
+    cash: Optional[float] = Field(
+        0, ge=0, le=100000
+    )
+
+    debt: Optional[float] = Field(
+        0, ge=0, le=100000
+    )
+
 
 @router.post("/")
 def get_monte_carlo_discounted_cash_flow(request: Item):

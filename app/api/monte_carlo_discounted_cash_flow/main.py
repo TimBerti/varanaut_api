@@ -2,7 +2,7 @@ import numpy as np
 from fastapi.responses import JSONResponse
 
 
-def monte_carlo_discounted_cash_flow(n_trials=100000, n_periods=10, p_0=100, r_0=1.3, dr_0=.3, r_n=1.04, dr_n=.16, S_0=10, m=0.3, dm=0.1, terminal_multiple=15, discount_rate=.1):
+def monte_carlo_discounted_cash_flow(n_trials=100000, n_periods=10, p_0=100, r_0=1.3, dr_0=.3, r_n=1.04, dr_n=.16, S_0=10, m=0.3, dm=0.1, terminal_multiple=15, discount_rate=.1, cash=0, debt=0):
     '''
     n_trials: number of trials
     n_periods: number of periods
@@ -21,6 +21,10 @@ def monte_carlo_discounted_cash_flow(n_trials=100000, n_periods=10, p_0=100, r_0
     discount_rate: discount rate per period
 
     terminal_multiple: terminal multiple applied to last cash flow
+
+    cash: cash per share
+
+    debt: debt per share
     '''
 
     # calculate return and return uncertainty for each period
@@ -48,7 +52,7 @@ def monte_carlo_discounted_cash_flow(n_trials=100000, n_periods=10, p_0=100, r_0
     # calculate fair values
 
     fair_values_arr = discounted_cash_flow_matrix.sum(
-        axis=1) + terminal_value_arr
+        axis=1) + terminal_value_arr + cash - debt
 
     # calculate probabilites of beeing undervalued
 
