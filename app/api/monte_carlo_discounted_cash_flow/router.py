@@ -46,7 +46,7 @@ class Item(BaseModel):
     )
 
     dm: Optional[float] = Field(
-        0.1, gt=0, le=0.5
+        0.1, ge=0.001, le=0.5
     )
 
     terminal_multiple: Optional[float] = Field(
