@@ -60,7 +60,7 @@ def monte_carlo_discounted_cash_flow(n_trials=100000, n_periods=10, p_0=100, r_0
     p_undervalued_arr = 1 - cumulative_probability
 
     return_object = JSONResponse(content={'fair_value': np.median(fair_values_arr),
-                                          'p_undervalued': p_undervalued_arr[np.argmin(np.abs(bin_edges - p_0))],
+                                          'p_undervalued': p_undervalued_arr[np.argmin(np.abs(bin_edges[:-1] - p_0))],
                                           'cash_flow_matrix': cash_flow_matrix[:100].tolist(),
                                           'mean_cash_flow': cash_flow_matrix.mean(axis=0).tolist(),
                                           'discounted_cash_flow_matrix': discounted_cash_flow_matrix[:100].tolist(),
