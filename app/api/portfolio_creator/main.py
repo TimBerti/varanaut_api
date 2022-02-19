@@ -17,7 +17,7 @@ def portfolio_creator(db, request):
         return JSONResponse(content='The request must contain an integer value between 0 and 30 for n_positions.', status_code=400)
 
     sql = f'''
-        SELECT ticker, cluster, combined_score
+        SELECT DISTINCT ON (name) name, ticker, cluster, combined_score
         FROM companies_display 
         WHERE ticker IN (
                 SELECT UNNEST(holdings) FROM etf 
@@ -50,11 +50,8 @@ def portfolio_creator(db, request):
             AND revenue_growth_3y_ranker > 0.6
         '''
 
-    sql += '''
-        ORDER BY combined_score DESC
-    '''
-
-    df = pd.read_sql(sql, con=db.bind)
+    df = pd.read_sql(sql, con=db.bind).sort_values(
+        'combined_score', ascending=False)
 
     clusters = df['cluster'].unique()
 

@@ -10,7 +10,6 @@ def get_portfolio_df(db, tickers):
         SELECT ticker, smb_factor, hml_factor, cma_factor, rmw_factor, implied_volatility
         FROM companies_display 
         WHERE ticker IN ('{"', '".join(tickers)}')
-        ORDER BY combined_score DESC
     '''
 
     return pd.read_sql(sql, con=db.bind).set_index('ticker')
@@ -19,7 +18,7 @@ def get_portfolio_df(db, tickers):
 def get_data(db, excluded_tickers, max_iv):
 
     sql = f'''
-        SELECT ticker, combined_score, smb_factor, hml_factor, cma_factor, rmw_factor
+        SELECT DISTINCT ON (name) name, ticker, combined_score, smb_factor, hml_factor, cma_factor, rmw_factor
         FROM companies_display 
         WHERE ticker IN (
                 SELECT UNNEST(holdings) FROM etf 
@@ -29,7 +28,6 @@ def get_data(db, excluded_tickers, max_iv):
         AND combined_score IS NOT NULL
         AND implied_volatility BETWEEN 1 AND {max_iv}
         AND sector != 'Financial Services'
-        ORDER BY combined_score DESC
     '''
 
     return pd.read_sql(sql, con=db.bind)
