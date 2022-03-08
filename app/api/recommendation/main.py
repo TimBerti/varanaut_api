@@ -20,11 +20,7 @@ def get_data(db, excluded_tickers, max_iv):
     sql = f'''
         SELECT DISTINCT ON (name) name, ticker, combined_score, smb_factor, hml_factor, cma_factor, rmw_factor
         FROM companies_display 
-        WHERE ticker IN (
-                SELECT UNNEST(holdings) FROM etf 
-                WHERE ticker = 'VTI'
-            )
-        AND ticker NOT IN ('{"', '".join(excluded_tickers)}')
+        WHERE ticker NOT IN ('{"', '".join(excluded_tickers)}')
         AND combined_score IS NOT NULL
         AND implied_volatility BETWEEN 1 AND {max_iv}
         AND sector != 'Financial Services'

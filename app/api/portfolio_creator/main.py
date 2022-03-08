@@ -19,11 +19,7 @@ def portfolio_creator(db, request):
     sql = f'''
         SELECT DISTINCT ON (name) name, ticker, cluster, combined_score
         FROM companies_display 
-        WHERE ticker IN (
-                SELECT UNNEST(holdings) FROM etf 
-                WHERE ticker = 'VTI'
-            )
-        AND cluster IS NOT NULL
+        WHERE cluster IS NOT NULL
         AND combined_score IS NOT NULL
         AND implied_volatility > 0
         AND implied_volatility_ranker <= {request["risk_coefficient"]}
